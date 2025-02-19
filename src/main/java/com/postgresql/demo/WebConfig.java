@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Apply CORS policy to all routes
-                .allowedOrigins("http://localhost:5173") // React app URL
+                .allowedOrigins("http://localhost:5173", "https://www.lexusshop.app'") // React app URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
                 .allowedHeaders("*") // Allow all headers
                 .allowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
