@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
 
 @Data
@@ -111,3 +115,57 @@ class ProductController {
         service.deleteProduct(id);
     }
 }
+
+@Service
+class EmailService {
+    private final JavaMailSender mailSender;
+
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    public void sendEmail(String name, String email, String phone, String message) {
+        // Log the sender's name, email, phone, and message in the console
+        System.out.println("Email sent by: " + name + " " + email + " " + phone + " " + message);
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo("test@example.com"); // Replace with recipient email
+        mailMessage.setSubject("New Contact Form Submission");
+        mailMessage.setText("Name: " + name + "\nEmail: " + email + "\nPhone: " + phone + "\n\nMessage: \n" + message);
+        mailSender.send(mailMessage);
+    }
+}
+
+@RestController
+@RequestMapping("/contact")
+class ContactController {
+    private final EmailService emailService;
+
+    public ContactController(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
+    @PostMapping
+    public String sendEmail(@RequestBody ContactRequest contactRequest) {
+        emailService.sendEmail(contactRequest.getName(), contactRequest.getEmail(), contactRequest.getPhone(), contactRequest.getMessage());
+        return "Message sent !";
+    }
+}
+
+class ContactRequest {
+    private String name;
+    private String email;
+    private String phone;
+    private String message;
+
+    // Getters and Setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+}
+
