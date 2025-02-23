@@ -1,6 +1,9 @@
 # Use a base image with Java installed
 FROM openjdk:17-jdk-slim as build
 
+# Install Maven
+RUN apt-get update && apt-get install -y maven
+
 # Set the working directory
 WORKDIR /app
 
